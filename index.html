@@ -51,7 +51,6 @@
             border: 1px solid rgba(108, 92, 231, 0.3);
         }
 
-        /* Caja de descripción arreglada */
         .description-card {
             background-color: #161b22;
             padding: 20px;
@@ -61,32 +60,39 @@
             text-align: center;
             border-bottom: 3px solid #6c5ce7;
             margin-bottom: 25px;
+            min-height: 100px; /* Espacio reservado para el texto */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .description-card p {
+        #typing-text {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #ffffff; /* Color blanco para que se vea bien */
+            color: #ffffff;
             line-height: 1.5;
         }
 
-        /* --- WIDGET RECORTADO (SOLO NÚMEROS) --- */
+        /* Cursor parpadeante para el efecto */
+        #typing-text::after {
+            content: '|';
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
         .discord-widget-wrapper {
             width: 100%;
             max-width: 350px;
-            height: 65px; /* Altura muy corta para tapar los usuarios */
+            height: 65px;
             overflow: hidden; 
             border-radius: 10px;
             margin-bottom: 30px;
             border: 1px solid rgba(255,255,255,0.1);
-            position: relative;
-        }
-
-        .discord-widget-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
         }
 
         .discord-button {
@@ -121,7 +127,7 @@
     <div class="hero-banner"></div>
 
     <article class="description-card">
-        <p>Un humilde rincón de internet dedicado a la socialización y al disfrute, con una moderación adecuada.</p>
+        <p id="typing-text"></p>
     </article>
 
     <div class="discord-widget-wrapper">
@@ -136,6 +142,22 @@
         &copy; 2026 Un Rincón Del Internet
     </footer>
 
-    
+    <script>
+        const textToType = "Un humilde rincón de internet dedicado a la socialización y al disfrute, con una moderación adecuada.";
+        const typingElement = document.getElementById("typing-text");
+        let charIndex = 0;
+
+        function startTyping() {
+            if (charIndex < textToType.length) {
+                typingElement.textContent += textToType.charAt(charIndex);
+                charIndex++;
+                setTimeout(startTyping, 50); // Velocidad de escritura
+            }
+        }
+
+        // Se asegura de que el script corra cuando la página cargue totalmente
+        window.addEventListener('DOMContentLoaded', startTyping);
+    </script>
+
 </body>
 </html>
