@@ -20,7 +20,6 @@
 
         .discord-widget-wrapper { width: 100%; max-width: 350px; height: 65px; overflow: hidden; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
 
-        /* --- MENÚ DE JUEGOS --- */
         .game-menu { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; max-width: 300px; margin-bottom: 40px; }
         .btn { display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; padding: 14px; border-radius: 12px; font-family: 'Montserrat', sans-serif; font-weight: 700; transition: 0.3s; cursor: pointer; border: none; font-size: 0.9rem; }
         .btn-discord { background-color: #5865F2; margin-bottom: 10px; border-radius: 50px; }
@@ -36,12 +35,15 @@
         .slot-machine { display: flex; justify-content: center; gap: 10px; margin: 20px 0; font-size: 3rem; background: #0d1117; padding: 15px; border-radius: 10px; border: 2px inset #6c5ce7; }
         
         /* --- MATH GAME --- */
-        #math-question { font-size: 2rem; margin: 15px 0; font-weight: bold; color: #6c5ce7; }
-        .math-input { width: 100px; padding: 10px; font-size: 1.2rem; text-align: center; border-radius: 5px; border: 1px solid #6c5ce7; background: #0d1117; color: white; }
+        #math-question { font-size: 2.5rem; margin: 15px 0; font-weight: bold; color: #6c5ce7; }
+        .math-input { width: 120px; padding: 12px; font-size: 1.5rem; text-align: center; border-radius: 8px; border: 2px solid #6c5ce7; background: #0d1117; color: white; outline: none; }
 
-        /* --- TIC TAC TOE --- */
-        .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px auto; max-width: 220px; }
-        .cell { aspect-ratio: 1/1; background: #0d1117; border: 1px solid #6c5ce7; display: flex; justify-content: center; align-items: center; font-size: 2rem; font-weight: bold; cursor: pointer; border-radius: 8px; }
+        /* --- TIC TAC TOE + ANIMACIONES --- */
+        .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px auto; max-width: 240px; }
+        .cell { aspect-ratio: 1/1; background: #0d1117; border: 1px solid #6c5ce7; display: flex; justify-content: center; align-items: center; font-size: 2.2rem; font-weight: bold; cursor: pointer; border-radius: 8px; transition: 0.3s; }
+        .cell.win { background: #6c5ce7; color: white; transform: scale(1.1); animation: pulse 0.5s infinite alternate; }
+        
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
 
         footer { margin-top: auto; padding: 10px; font-size: 0.8rem; color: #555; }
     </style>
@@ -76,18 +78,14 @@
             <span class="close" onclick="closeModal('tttModal')">&times;</span>
             <div id="ttt-setup">
                 <h3>3 en Raya</h3>
-                <p style="margin:10px 0;">Dificultad:</p>
-                <select id="ttt-diff" style="padding:5px; margin-bottom:15px;">
-                    <option value="easy">Fácil</option>
-                    <option value="normal">Normal</option>
-                    <option value="hard">Extremo</option>
-                </select>
-                <button class="btn btn-game" onclick="startTTT()">Jugar</button>
+                <p style="margin:10px 0;">¿Quién empieza?</p>
+                <button class="btn btn-game" onclick="startTTT('X')" style="margin-bottom:5px;">Yo soy X</button>
+                <button class="btn btn-game" onclick="startTTT('O')">Yo soy O</button>
             </div>
             <div id="ttt-game" style="display:none;">
-                <div id="ttt-status">Tu turno</div>
+                <div id="ttt-status" style="margin-bottom:10px; font-weight:bold;">Preparando...</div>
                 <div class="board" id="ttt-board"></div>
-                <button onclick="startTTT()" style="background:none; border:1px solid #6c5ce7; color:white; padding:5px 10px; border-radius:5px;">Reiniciar</button>
+                <button class="btn btn-game" onclick="resetTTT()" style="padding:8px; font-size:0.8rem; margin-top:10px;">Reiniciar</button>
             </div>
         </div>
     </div>
@@ -96,11 +94,10 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('slotModal')">&times;</span>
             <h3>Casino Rincón</h3>
-            <p style="font-size:0.8rem; color:#888;">40 iconos - Dificultad: Casi Imposible</p>
             <div class="slot-machine">
                 <span id="s1">❓</span><span id="s2">❓</span><span id="s3">❓</span>
             </div>
-            <div id="slot-result" style="margin-bottom:15px; font-weight:bold;">¡Suerte!</div>
+            <div id="slot-result" style="margin-bottom:15px; font-weight:bold;">¡Mucha suerte!</div>
             <button class="btn btn-game" id="spinBtn" onclick="spin()">¡GIRAR!</button>
         </div>
     </div>
@@ -111,8 +108,8 @@
             <h3>Reto Matemático</h3>
             <div id="math-question">...</div>
             <input type="number" id="math-answer" class="math-input" placeholder="?">
-            <div id="math-msg" style="margin:15px 0; font-weight:bold;"></div>
-            <button class="btn btn-game" onclick="checkMath()">RESPONDER</button>
+            <div id="math-msg" style="margin:15px 0; font-weight:bold; height:20px;"></div>
+            <button class="btn btn-game" onclick="checkMath()">ENVIAR RESPUESTA</button>
         </div>
     </div>
 
@@ -130,8 +127,39 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; if(id==='mathModal') nextMath(); }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // --- TRAGAMONEDAS (40 iconos) ---
-        const icons = ['🍎','🍐','🍋','🍌','🍉','🍇','🍓','🫐','🍈','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌶️','🌽','🥕','🫒','🧄','🧅','🍄','🥜','🌰','🍞','🥐','🥖','🫓','🥨','🥯','🥞','🧇','🧀','🍗'];
+        // --- MATEMÁTICAS (CORREGIDO) ---
+        let currentAns = 0;
+        function nextMath() {
+            const a = Math.floor(Math.random() * 50) + 1;
+            const b = Math.floor(Math.random() * 50) + 1;
+            const op = Math.random() > 0.5 ? '+' : '-';
+            currentAns = op === '+' ? a + b : a - b;
+            document.getElementById('math-question').textContent = `${a} ${op} ${b}`;
+            document.getElementById('math-answer').value = "";
+            document.getElementById('math-msg').textContent = "";
+            document.getElementById('math-answer').focus();
+        }
+        function checkMath() {
+            const inputField = document.getElementById('math-answer');
+            const userVal = inputField.value.trim();
+            if(userVal === "") return;
+            
+            const userAns = parseInt(userVal);
+            const msg = document.getElementById('math-msg');
+            
+            if(userAns === currentAns) {
+                msg.textContent = "¡Correcto! ✅";
+                msg.style.color = "#4BB543";
+                setTimeout(nextMath, 800);
+            } else {
+                msg.textContent = "Incorrecto, intenta de nuevo ❌";
+                msg.style.color = "#FF3333";
+                inputField.value = "";
+            }
+        }
+
+        // --- TRAGAMONEDAS ---
+        const icons = ['🍎','🍐','🍋','🍌','🍉','🍇','🍓','🍒','🍑','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🌶️','🌽','🍄','🥜','🍞','🥐','🥖','🥨','🥯','🥞','🧀','🍗','🍔','🍟','🍕','🌮','🌯','🍿','🍱','🍦','🍩','🍪','🧁','🍫'];
         function spin() {
             const btn = document.getElementById('spinBtn');
             btn.disabled = true;
@@ -142,70 +170,95 @@
                 document.getElementById('s2').textContent = icons[Math.floor(Math.random()*icons.length)];
                 document.getElementById('s3').textContent = icons[Math.floor(Math.random()*icons.length)];
                 count++;
-                if(count > 15) {
+                if(count > 20) {
                     clearInterval(timer);
                     btn.disabled = false;
-                    const res1 = document.getElementById('s1').textContent;
-                    const res2 = document.getElementById('s2').textContent;
-                    const res3 = document.getElementById('s3').textContent;
-                    if(res1 === res2 && res2 === res3) {
-                        document.getElementById('slot-result').textContent = "¡PREMIO MAYOR! 🎉";
+                    const r1 = document.getElementById('s1').textContent;
+                    const r2 = document.getElementById('s2').textContent;
+                    const r3 = document.getElementById('s3').textContent;
+                    if(r1 === r2 && r2 === r3) {
+                        document.getElementById('slot-result').textContent = "¡JACKPOT! 🏆";
                         document.getElementById('slot-result').style.color = "#FFD700";
                     } else {
-                        document.getElementById('slot-result').textContent = "Sigue intentando...";
+                        document.getElementById('slot-result').textContent = "Perdiste...";
                         document.getElementById('slot-result').style.color = "white";
                     }
                 }
-            }, 80);
+            }, 70);
         }
 
-        // --- MATEMÁTICAS ---
-        let currentAns = 0;
-        function nextMath() {
-            const a = Math.floor(Math.random() * 50) + 1;
-            const b = Math.floor(Math.random() * 50) + 1;
-            const op = Math.random() > 0.5 ? '+' : '-';
-            currentAns = op === '+' ? a + b : a - b;
-            document.getElementById('math-question').textContent = `${a} ${op} ${b}`;
-            document.getElementById('math-answer').value = "";
-            document.getElementById('math-msg').textContent = "";
-        }
-        function checkMath() {
-            const userAns = parseInt(document.getElementById('math-answer').value);
-            if(userAns === currentAns) {
-                document.getElementById('math-msg').textContent = "¡Correcto! ✅";
-                document.getElementById('math-msg').style.color = "#4BB543";
-                setTimeout(nextMath, 1000);
-            } else {
-                document.getElementById('math-msg').textContent = "Incorrecto ❌";
-                document.getElementById('math-msg').style.color = "#FF3333";
-            }
-        }
+        // --- 3 EN RAYA (CON RETRASO Y ANIMACIÓN) ---
+        let tBoard = ["","","","","","","","",""];
+        let pChar = "X";
+        let aiChar = "O";
+        let isAiThinking = false;
 
-        // --- 3 EN RAYA (Simplificado para integración) ---
-        let tttBoard = ["","","","","","","","",""];
-        function startTTT() {
-            tttBoard = ["","","","","","","","",""];
+        function startTTT(char) {
+            pChar = char;
+            aiChar = char === "X" ? "O" : "X";
+            tBoard = ["","","","","","","","",""];
             document.getElementById('ttt-setup').style.display = 'none';
             document.getElementById('ttt-game').style.display = 'block';
-            drawTTT();
+            isAiThinking = false;
+            if(aiChar === "X") {
+                document.getElementById('ttt-status').textContent = "IA pensando...";
+                setTimeout(aiMove, 1000);
+            } else {
+                document.getElementById('ttt-status').textContent = "Tu turno ("+pChar+")";
+            }
+            renderTTT();
         }
-        function drawTTT() {
+
+        function renderTTT() {
             const container = document.getElementById('ttt-board');
             container.innerHTML = "";
-            tttBoard.forEach((val, i) => {
+            tBoard.forEach((v, i) => {
                 const cell = document.createElement('div');
                 cell.className = 'cell';
-                cell.textContent = val;
-                cell.onclick = () => { if(tttBoard[i]==="") { tttBoard[i]="X"; aiTTT(); drawTTT(); checkTTTWin(); } };
+                cell.textContent = v;
+                cell.onclick = () => playerMove(i);
                 container.appendChild(cell);
             });
         }
-        function aiTTT() {
-            let empty = tttBoard.map((v,i) => v===""?i:null).filter(v=>v!==null);
-            if(empty.length > 0) tttBoard[empty[Math.floor(Math.random()*empty.length)]] = "O";
+
+        function playerMove(i) {
+            if(tBoard[i] !== "" || isAiThinking) return;
+            tBoard[i] = pChar;
+            renderTTT();
+            if(!checkEnd()) {
+                isAiThinking = true;
+                document.getElementById('ttt-status').textContent = "IA pensando...";
+                setTimeout(aiMove, 1000);
+            }
         }
-        function checkTTTWin() { /* Lógica básica de victoria */ }
+
+        function aiMove() {
+            let empty = tBoard.map((v,i) => v===""?i:null).filter(v=>v!==null);
+            if(empty.length > 0) {
+                let move = empty[Math.floor(Math.random()*empty.length)];
+                tBoard[move] = aiChar;
+                renderTTT();
+                isAiThinking = false;
+                if(!checkEnd()) {
+                    document.getElementById('ttt-status').textContent = "Tu turno ("+pChar+")";
+                }
+            }
+        }
+
+        function checkEnd() {
+            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            for(let w of wins) {
+                if(tBoard[w[0]] && tBoard[w[0]]===tBoard[w[1]] && tBoard[w[0]]===tBoard[w[2]]) {
+                    document.getElementById('ttt-status').textContent = tBoard[w[0]] === pChar ? "¡GANASTE! 🎉" : "Perdiste... 💀";
+                    w.forEach(idx => document.getElementById('ttt-board').children[idx].classList.add('win'));
+                    return true;
+                }
+            }
+            if(!tBoard.includes("")) { document.getElementById('ttt-status').textContent = "¡Empate! 🤝"; return true; }
+            return false;
+        }
+
+        function resetTTT() { document.getElementById('ttt-setup').style.display = 'block'; document.getElementById('ttt-game').style.display = 'none'; }
     </script>
 </body>
 </html>
