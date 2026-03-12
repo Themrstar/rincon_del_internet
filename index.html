@@ -40,8 +40,7 @@
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
 
         .setup-row { margin: 10px 0; font-size: 0.9rem; }
-        .choice-group { display: flex; gap: 10px; justify-content: center; margin-top: 5px; }
-        .mini-btn { background: #0d1117; border: 1px solid #6c5ce7; color: white; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
+        .mini-btn { background: #0d1117; border: 1px solid #6c5ce7; color: white; padding: 5px 15px; border-radius: 5px; cursor: pointer; margin: 0 2px; }
         .mini-btn.active { background: #6c5ce7; }
 
         footer { margin-top: auto; padding: 10px; font-size: 0.8rem; color: #555; }
@@ -82,7 +81,7 @@
                     <button class="mini-btn" id="fO" onclick="setF('O')">O</button>
                 </div>
                 <div class="setup-row">
-                    Nivel: <select id="ttt-diff" style="background:#0d1117; color:white; border:1px solid #6c5ce7;">
+                    Nivel: <select id="ttt-diff" style="background:#0d1117; color:white; border:1px solid #6c5ce7; padding: 2px;">
                         <option value="easy">Fácil</option>
                         <option value="normal">Normal</option>
                         <option value="hard">Extremo</option>
@@ -124,17 +123,18 @@
     <footer>&copy; 2026 Un Rincón Del Internet</footer>
 
     <script>
-        // --- TYPING ---
+        // --- EFECTO TYPING ---
         const textToType = "Un humilde rincón de internet dedicado a la socialización y al disfrute, con una moderación adecuada.";
         const typingElement = document.getElementById("typing-text");
         let charIndex = 0;
         function startTyping() { if (charIndex < textToType.length) { typingElement.textContent += textToType.charAt(charIndex); charIndex++; setTimeout(startTyping, 50); } }
         window.addEventListener('DOMContentLoaded', startTyping);
 
+        // --- GESTIÓN DE MODALES ---
         function openModal(id) { document.getElementById(id).style.display = 'flex'; if(id==='mathModal') nextMath(); }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id==='tttModal') resetTTT(); }
 
-        // --- MATH (FIXED) ---
+        // --- JUEGO DE MATEMÁTICAS ---
         let cAns = 0;
         function nextMath() {
             const a = Math.floor(Math.random()*50)+1, b = Math.floor(Math.random()*50)+1;
@@ -143,89 +143,124 @@
             document.getElementById('math-question').textContent = `${a} ${op} ${b}`;
             document.getElementById('math-answer').value = "";
             document.getElementById('math-msg').textContent = "";
+            document.getElementById('math-answer').focus();
         }
         function checkMath() {
             const val = document.getElementById('math-answer').value;
+            if(val === "") return;
             if(parseInt(val) === cAns) {
                 document.getElementById('math-msg').textContent = "¡Correcto! ✅";
                 document.getElementById('math-msg').style.color = "#4BB543";
                 setTimeout(nextMath, 800);
             } else {
-                document.getElementById('math-msg').textContent = "Error ❌";
+                document.getElementById('math-msg').textContent = "Error, intenta de nuevo ❌";
                 document.getElementById('math-msg').style.color = "#FF3333";
             }
         }
 
-        // --- SLOTS ---
-        const icos = ['🍎','🍋','🍒','🍉','🍇','🍓','🍍','🥑','🌶️','🍄','🍕','🍔','🍦','🍩','🍪','🍫','💎','👑','🍀','⭐'];
+        // --- TRAGAMONEDAS (40 ICONOS) ---
+        const icos = ['🍎','🍐','🍋','🍌','🍉','🍇','🍓','🫐','🍈','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌶️','🌽','🥕','🫒','🧄','🧅','🍄','🥜','🌰','🍞','🥐','🥖','🫓','🥨','🥯','🥞',' waffle','🧀','🍗'];
         function spin() {
-            const b = document.getElementById('spinBtn'); b.disabled = true;
-            let c = 0;
-            let t = setInterval(() => {
+            const bBtn = document.getElementById('spinBtn'); bBtn.disabled = true;
+            document.getElementById('slot-result').textContent = "Girando...";
+            let count = 0;
+            let timer = setInterval(() => {
                 document.getElementById('s1').textContent = icos[Math.floor(Math.random()*icos.length)];
                 document.getElementById('s2').textContent = icos[Math.floor(Math.random()*icos.length)];
                 document.getElementById('s3').textContent = icos[Math.floor(Math.random()*icos.length)];
-                if(++c > 20) {
-                    clearInterval(t); b.disabled = false;
-                    const r = [document.getElementById('s1').textContent, document.getElementById('s2').textContent, document.getElementById('s3').textContent];
-                    document.getElementById('slot-result').textContent = (r[0]===r[1] && r[1]===r[2]) ? "¡JACKPOT! 🏆" : "Perdiste...";
+                if(++count > 20) {
+                    clearInterval(timer); bBtn.disabled = false;
+                    const res = [document.getElementById('s1').textContent, document.getElementById('s2').textContent, document.getElementById('s3').textContent];
+                    if(res[0]===res[1] && res[1]===res[2]) {
+                        document.getElementById('slot-result').textContent = "¡JACKPOT! 🏆";
+                        document.getElementById('slot-result').style.color = "#FFD700";
+                    } else {
+                        document.getElementById('slot-result').textContent = "Perdiste...";
+                        document.getElementById('slot-result').style.color = "white";
+                    }
                 }
             }, 70);
         }
 
-        // --- 3 EN RAYA (MINIMAX + DIFICULTADES) ---
-        let b = ["","","","","","","","",""], h = "X", ai = "O", diff = "easy", act = false;
-        function setF(c) { h=c; ai=c==="X"?"O":"X"; document.getElementById('fX').className=c==='X'?'mini-btn active':'mini-btn'; document.getElementById('fO').className=c==='O'?'mini-btn active':'mini-btn'; }
+        // --- 3 EN RAYA (LÓGICA MEJORADA) ---
+        let board = ["","","","","","","","",""], human = "X", ai = "O", difficulty = "easy", active = false;
+        let isAiThinking = false;
+
+        function setF(c) { 
+            human = c; ai = c === "X" ? "O" : "X"; 
+            document.getElementById('fX').className = c === 'X' ? 'mini-btn active' : 'mini-btn'; 
+            document.getElementById('fO').className = c === 'O' ? 'mini-btn active' : 'mini-btn'; 
+        }
+
         function startTTT() {
-            b = ["","","","","","","","",""]; diff = document.getElementById('ttt-diff').value;
-            document.getElementById('ttt-setup').style.display='none'; document.getElementById('ttt-game').style.display='block';
-            act = true; render();
-            if(ai==="X") { status("IA pensando..."); setTimeout(aiTurn, 1000); } else status("Tu turno ("+h+")");
+            board = ["","","","","","","","",""]; 
+            difficulty = document.getElementById('ttt-diff').value;
+            document.getElementById('ttt-setup').style.display = 'none'; 
+            document.getElementById('ttt-game').style.display = 'block';
+            active = true; isAiThinking = false;
+            renderTTT();
+            if(ai === "X") { statusTTT("IA pensando..."); isAiThinking = true; setTimeout(aiTurn, 1000); } 
+            else { statusTTT("Tu turno ("+human+")"); }
         }
-        function render() {
-            const c = document.getElementById('ttt-board'); c.innerHTML = "";
-            b.forEach((v,i) => { const d = document.createElement('div'); d.className='cell'; d.textContent=v; d.onclick=()=>play(i); c.appendChild(d); });
+
+        function renderTTT() {
+            const cont = document.getElementById('ttt-board'); cont.innerHTML = "";
+            board.forEach((v, i) => {
+                const d = document.createElement('div'); d.className = 'cell'; d.textContent = v;
+                d.onclick = () => { if(!isAiThinking && board[i] === "" && active) { board[i] = human; renderTTT(); if(!checkTTT()) { isAiThinking = true; statusTTT("IA pensando..."); setTimeout(aiTurn, 1000); } } };
+                cont.appendChild(d);
+            });
         }
-        function play(i) { if(b[i]!=="" || !act) return; b[i]=h; render(); if(!check()){ act=false; status("IA pensando..."); setTimeout(aiTurn, 1000); } }
+
         function aiTurn() {
-            let m;
-            if(diff==="easy") m = rand();
-            else if(diff==="normal") m = Math.random()>0.4 ? minimax(b, ai).index : rand();
-            else m = minimax(b, ai).index;
-            b[m]=ai; render(); act=true; if(!check()) status("Tu turno ("+h+")");
+            if(!active) return;
+            let move;
+            if(difficulty === "easy") move = randMove();
+            else if(difficulty === "normal") move = Math.random() > 0.4 ? minimax(board, ai).index : randMove();
+            else move = minimax(board, ai).index;
+            
+            board[move] = ai; renderTTT(); isAiThinking = false;
+            if(!checkTTT()) statusTTT("Tu turno ("+human+")");
         }
-        function rand() { let e = b.map((v,i)=>v===""?i:null).filter(v=>v!==null); return e[Math.floor(Math.random()*e.length)]; }
-        function status(t) { document.getElementById('ttt-status').textContent = t; }
-        
-        function minimax(board, player) {
-            let e = board.map((v,i)=>v===""?i:null).filter(v=>v!==null);
-            if(win(board, h)) return {score:-10}; if(win(board, ai)) return {score:10}; if(e.length===0) return {score:0};
+
+        function randMove() { let e = board.map((v,i)=>v===""?i:null).filter(v=>v!==null); return e[Math.floor(Math.random()*e.length)]; }
+        function statusTTT(t) { document.getElementById('ttt-status').textContent = t; }
+
+        function minimax(newBoard, player) {
+            let avail = newBoard.map((v,i)=>v===""?i:null).filter(v=>v!==null);
+            if(winTTT(newBoard, human)) return {score:-10};
+            if(winTTT(newBoard, ai)) return {score:10};
+            if(avail.length === 0) return {score:0};
             let moves = [];
-            for(let i=0; i<e.length; i++) {
-                let move = {index: e[i]}; board[e[i]] = player;
-                move.score = minimax(board, player===ai?h:ai).score;
-                board[e[i]] = ""; moves.push(move);
+            for(let i=0; i<avail.length; i++) {
+                let m = {index: avail[i]}; newBoard[avail[i]] = player;
+                m.score = minimax(newBoard, player === ai ? human : ai).score;
+                newBoard[avail[i]] = ""; moves.push(m);
             }
             let best;
-            if(player === ai) { let s=-1000; for(let i=0; i<moves.length; i++) if(moves[i].score > s){ s=moves[i].score; best=i; } }
-            else { let s=1000; for(let i=0; i<moves.length; i++) if(moves[i].score < s){ s=moves[i].score; best=i; } }
+            if(player === ai) { let s = -1000; for(let i=0; i<moves.length; i++) if(moves[i].score > s){ s=moves[i].score; best=i; } }
+            else { let s = 1000; for(let i=0; i<moves.length; i++) if(moves[i].score < s){ s=moves[i].score; best=i; } }
             return moves[best];
         }
-        function win(b, p) {
+
+        function winTTT(b, p) {
             const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
             return w.some(c => c.every(i => b[i] === p));
         }
-        function check() {
-            if(win(b, h)) { finish("¡GANASTE! 🎉"); return true; }
-            if(win(b, ai)) { finish(diff==="hard"?"IA: Resultado lógico.":"IA Ganó"); return true; }
-            if(!b.includes("")) { finish("Empate 🤝"); return true; }
+
+        function checkTTT() {
+            if(winTTT(board, human)) { endTTT("¡GANASTE! 🎉"); return true; }
+            if(winTTT(board, ai)) { endTTT(difficulty==="hard"?"IA: Resultado lógico.":"IA Ganó"); return true; }
+            if(!board.includes("")) { endTTT("Empate 🤝"); return true; }
             return false;
         }
-        function finish(m) {
-            status(m); act=false;
+
+        function endTTT(m) {
+            statusTTT(m); active = false; isAiThinking = false;
             const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            w.forEach(c => { if(c.every(i => b[i] && b[i] === b[c[0]])) c.forEach(i => document.getElementById('ttt-board').children[i].classList.add('win')); });
+            w.forEach(c => { if(c.every(i => board[i] && board[i] === board[c[0]])) c.forEach(i => document.getElementById('ttt-board').children[i].classList.add('win')); });
         }
+
         function resetTTT() { document.getElementById('ttt-setup').style.display='block'; document.getElementById('ttt-game').style.display='none'; }
     </script>
 </body>
