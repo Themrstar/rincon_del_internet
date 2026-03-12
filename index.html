@@ -60,7 +60,7 @@
             text-align: center;
             border-bottom: 3px solid #6c5ce7;
             margin-bottom: 25px;
-            min-height: 100px; /* Espacio reservado para el texto */
+            min-height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -73,17 +73,8 @@
             line-height: 1.5;
         }
 
-        /* Cursor parpadeante para el efecto */
-        #typing-text::after {
-            content: '|';
-            animation: blink 0.7s infinite;
-        }
-
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0; }
-            100% { opacity: 1; }
-        }
+        #typing-text::after { content: '|'; animation: blink 0.7s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 
         .discord-widget-wrapper {
             width: 100%;
@@ -91,30 +82,98 @@
             height: 65px;
             overflow: hidden; 
             border-radius: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .discord-button {
+        /* --- ESTILOS DE BOTONES --- */
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .discord-button, .game-button {
             display: inline-flex;
             align-items: center;
-            background-color: #5865F2;
+            justify-content: center;
             color: white;
             text-decoration: none;
             padding: 15px 35px;
             border-radius: 50px;
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
-            margin-bottom: 40px;
+            width: 100%;
+            max-width: 300px;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
         }
 
-        footer {
-            margin-top: auto;
-            padding: 10px;
-            font-size: 0.8rem;
-            color: #555;
+        .discord-button {
+            background-color: #5865F2;
+            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
         }
+
+        .game-button {
+            background-color: #6c5ce7;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        .discord-button:active, .game-button:active { transform: scale(0.95); }
+
+        /* --- ESTILOS DEL MINIJUEGO (MODAL) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #161b22;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #6c5ce7;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px; right: 15px;
+            color: white; font-size: 25px; cursor: pointer;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 80px);
+            grid-gap: 10px;
+            margin: 20px auto;
+        }
+
+        .cell {
+            width: 80px; height: 80px;
+            background: #0d1117;
+            border: 1px solid #6c5ce7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        .cell.taken { cursor: default; }
+
+        footer { margin-top: auto; padding: 10px; font-size: 0.8rem; color: #555; }
     </style>
 </head>
 <body>
@@ -134,15 +193,35 @@
         <iframe src="https://discord.com/widget?id=1127514447007719565&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
     </div>
 
-    <a href="https://discord.gg/zRSJX6teBj" class="discord-button" target="_blank">
-        ¡ENTRAR AL SERVIDOR!
-    </a>
+    <div class="btn-container">
+        <a href="https://discord.gg/zRSJX6teBj" class="discord-button" target="_blank">¡ENTRAR AL SERVIDOR!</a>
+        <button class="game-button" onclick="openGame()">JUGAR 3 EN RAYA</button>
+    </div>
 
-    <footer>
-        &copy; 2026 Un Rincón Del Internet
-    </footer>
+    <div id="gameModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeGame()">&times;</span>
+            <h2 style="margin-bottom: 10px;">3 en Raya vs IA</h2>
+            <div id="status">Tu turno (X)</div>
+            <div class="board" id="board">
+                <div class="cell" onclick="makeMove(0)"></div>
+                <div class="cell" onclick="makeMove(1)"></div>
+                <div class="cell" onclick="makeMove(2)"></div>
+                <div class="cell" onclick="makeMove(3)"></div>
+                <div class="cell" onclick="makeMove(4)"></div>
+                <div class="cell" onclick="makeMove(5)"></div>
+                <div class="cell" onclick="makeMove(6)"></div>
+                <div class="cell" onclick="makeMove(7)"></div>
+                <div class="cell" onclick="makeMove(8)"></div>
+            </div>
+            <button onclick="resetGame()" style="padding: 5px 15px; cursor: pointer;">Reiniciar</button>
+        </div>
+    </div>
+
+    <footer>&copy; 2026 Un Rincón Del Internet</footer>
 
     <script>
+        // --- EFECTO TYPING ---
         const textToType = "Un humilde rincón de internet dedicado a la socialización y al disfrute, con una moderación adecuada.";
         const typingElement = document.getElementById("typing-text");
         let charIndex = 0;
@@ -151,13 +230,71 @@
             if (charIndex < textToType.length) {
                 typingElement.textContent += textToType.charAt(charIndex);
                 charIndex++;
-                setTimeout(startTyping, 50); // Velocidad de escritura
+                setTimeout(startTyping, 50);
+            }
+        }
+        window.addEventListener('DOMContentLoaded', startTyping);
+
+        // --- LÓGICA DEL JUEGO ---
+        let board = ["", "", "", "", "", "", "", "", ""];
+        let gameActive = true;
+        const statusDisplay = document.getElementById('status');
+        const cells = document.querySelectorAll('.cell');
+
+        function openGame() { document.getElementById('gameModal').style.display = 'flex'; }
+        function closeGame() { document.getElementById('gameModal').style.display = 'none'; resetGame(); }
+
+        function makeMove(index) {
+            if (board[index] === "" && gameActive) {
+                board[index] = "X";
+                updateBoard();
+                if (!checkWinner()) {
+                    statusDisplay.textContent = "IA pensando...";
+                    gameActive = false;
+                    setTimeout(aiMove, 600);
+                }
             }
         }
 
-        // Se asegura de que el script corra cuando la página cargue totalmente
-        window.addEventListener('DOMContentLoaded', startTyping);
-    </script>
+        function aiMove() {
+            let emptyCells = board.map((val, idx) => val === "" ? idx : null).filter(val => val !== null);
+            if (emptyCells.length > 0) {
+                let randomIdx = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                board[randomIdx] = "O";
+                updateBoard();
+                gameActive = true;
+                if (!checkWinner()) statusDisplay.textContent = "Tu turno (X)";
+            }
+        }
 
+        function updateBoard() {
+            cells.forEach((cell, i) => {
+                cell.textContent = board[i];
+                if(board[i] !== "") cell.classList.add('taken');
+            });
+        }
+
+        function checkWinner() {
+            const winConditions = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            for (let condition of winConditions) {
+                let [a, b, c] = condition;
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    statusDisplay.textContent = `¡Gana ${board[a]}!`;
+                    gameActive = false;
+                    return true;
+                }
+            }
+            if (!board.includes("")) { statusDisplay.textContent = "¡Empate!"; return true; }
+            return false;
+        }
+
+        function resetGame() {
+            board = ["", "", "", "", "", "", "", "", ""];
+            gameActive = true;
+            statusDisplay.textContent = "Tu turno (X)";
+            cells.forEach(cell => { cell.textContent = ""; cell.classList.remove('taken'); });
+        }
+    </script>
 </body>
-</html>
+    </html>
+    
