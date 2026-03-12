@@ -17,30 +17,39 @@
 
         .description-card { background-color: #161b22; padding: 20px; border-radius: 12px; width: 100%; max-width: 500px; text-align: center; border-bottom: 3px solid #6c5ce7; margin-bottom: 25px; min-height: 80px; display: flex; align-items: center; justify-content: center; }
         #typing-text { font-size: 1.1rem; font-weight: 600; color: #ffffff; line-height: 1.5; }
+        #typing-text::after { content: '|'; animation: blink 0.7s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 
         .discord-widget-wrapper { width: 100%; max-width: 350px; height: 65px; overflow: hidden; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
 
+        /* --- MENÚ DE JUEGOS --- */
         .game-menu { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; max-width: 300px; margin-bottom: 40px; }
         .btn { display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; padding: 14px; border-radius: 12px; font-family: 'Montserrat', sans-serif; font-weight: 700; transition: 0.3s; cursor: pointer; border: none; font-size: 0.9rem; }
         .btn-discord { background-color: #5865F2; margin-bottom: 10px; border-radius: 50px; }
         .btn-game { background-color: #161b22; border: 1px solid #6c5ce7; }
         .btn:active { transform: scale(0.95); }
 
+        /* --- MODALES --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; z-index: 1000; padding: 15px; }
         .modal-content { background: #161b22; padding: 25px; border-radius: 20px; text-align: center; border: 2px solid #6c5ce7; width: 100%; max-width: 350px; position: relative; }
         .close { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #888; }
 
-        .slot-machine { display: flex; justify-content: center; gap: 10px; margin: 20px 0; font-size: 3rem; background: #0d1117; padding: 15px; border-radius: 10px; border: 2px inset #6c5ce7; }
+        /* --- TRAGAMONEDAS (CORREGIDO) --- */
+        .slot-machine { display: flex; justify-content: center; gap: 10px; margin: 20px 0; font-size: 3.5rem; background: #0d1117; padding: 15px; border-radius: 10px; border: 2px inset #6c5ce7; }
+        .slot-result { margin-bottom: 15px; font-weight: bold; height: 20px; }
+        
+        /* --- MATH GAME --- */
         #math-question { font-size: 2.5rem; margin: 15px 0; font-weight: bold; color: #6c5ce7; }
         .math-input { width: 120px; padding: 12px; font-size: 1.5rem; text-align: center; border-radius: 8px; border: 2px solid #6c5ce7; background: #0d1117; color: white; outline: none; }
 
-        .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px auto; max-width: 240px; }
-        .cell { aspect-ratio: 1/1; background: #0d1117; border: 1px solid #6c5ce7; display: flex; justify-content: center; align-items: center; font-size: 2.2rem; font-weight: bold; cursor: pointer; border-radius: 8px; transition: 0.3s; }
-        .cell.win { background: #6c5ce7; color: white; animation: pulse 0.5s infinite alternate; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+        /* --- TIC TAC TOE (IA MEJORADA + REINICIO) --- */
+        .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px auto; max-width: 250px; }
+        .cell { aspect-ratio: 1/1; background: #0d1117; border: 1px solid #6c5ce7; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; font-weight: bold; cursor: pointer; border-radius: 8px; transition: 0.3s; }
+        .cell.win { background: #6c5ce7; color: white; transform: scale(1.1); animation: winPulse 0.5s infinite alternate; }
+        @keyframes winPulse { from { transform: scale(1); } to { transform: scale(1.05); } }
 
         .setup-row { margin: 10px 0; font-size: 0.9rem; }
-        .mini-btn { background: #0d1117; border: 1px solid #6c5ce7; color: white; padding: 5px 15px; border-radius: 5px; cursor: pointer; margin: 0 2px; }
+        .mini-btn { background: #0d1117; border: 1px solid #6c5ce7; color: white; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
         .mini-btn.active { background: #6c5ce7; }
 
         footer { margin-top: auto; padding: 10px; font-size: 0.8rem; color: #555; }
@@ -77,22 +86,24 @@
             <div id="ttt-setup">
                 <h3>3 en Raya</h3>
                 <div class="setup-row">
-                    Ficha: <button class="mini-btn active" id="fX" onclick="setF('X')">X</button> 
-                    <button class="mini-btn" id="fO" onclick="setF('O')">O</button>
+                    Ficha: <button class="mini-btn active" id="btnFichaX" onclick="setFichaTTT('X')">X</button> <button class="mini-btn" id="btnFichaO" onclick="setFichaTTT('O')">O</button>
                 </div>
                 <div class="setup-row">
-                    Nivel: <select id="ttt-diff" style="background:#0d1117; color:white; border:1px solid #6c5ce7; padding: 2px;">
+                    Nivel: <select id="ttt-diff" style="padding:3px; background:#0d1117; color:white; border:1px solid #6c5ce7;">
                         <option value="easy">Fácil</option>
                         <option value="normal">Normal</option>
                         <option value="hard">Extremo</option>
                     </select>
                 </div>
-                <button class="btn btn-game" onclick="startTTT()" style="margin-top:10px;">JUGAR</button>
+                <button class="btn btn-game" onclick="startTTT()" style="margin-top:10px;">Jugar</button>
             </div>
             <div id="ttt-game" style="display:none;">
-                <div id="ttt-status" style="margin-bottom:10px; font-weight:bold;">Preparando...</div>
+                <div id="ttt-status" style="margin-bottom:10px; font-weight:bold;">Tu turno</div>
                 <div class="board" id="ttt-board"></div>
-                <button class="mini-btn" onclick="resetTTT()">Ajustes</button>
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+                    <button class="mini-btn" id="btnRestartTTT" onclick="restartTTT()" style="display:none;">Volver a Jugar</button>
+                    <button class="mini-btn" onclick="backToTTTSetup()" style="border-color:#555; color:#888;">Ajustes</button>
+                </div>
             </div>
         </div>
     </div>
@@ -104,7 +115,7 @@
             <div class="slot-machine">
                 <span id="s1">❓</span><span id="s2">❓</span><span id="s3">❓</span>
             </div>
-            <div id="slot-result" style="margin-bottom:15px; font-weight:bold;">¡Mucha suerte!</div>
+            <div class="slot-result" id="slot-result">¡Suerte!</div>
             <button class="btn btn-game" id="spinBtn" onclick="spin()">¡GIRAR!</button>
         </div>
     </div>
@@ -116,14 +127,14 @@
             <div id="math-question">...</div>
             <input type="number" id="math-answer" class="math-input" placeholder="?">
             <div id="math-msg" style="margin:15px 0; font-weight:bold; height:20px;"></div>
-            <button class="btn btn-game" onclick="checkMath()">ENVIAR</button>
+            <button class="btn btn-game" onclick="checkMath()">RESPONDER</button>
         </div>
     </div>
 
     <footer>&copy; 2026 Un Rincón Del Internet</footer>
 
     <script>
-        // --- EFECTO TYPING ---
+        // --- TYPING ---
         const textToType = "Un humilde rincón de internet dedicado a la socialización y al disfrute, con una moderación adecuada.";
         const typingElement = document.getElementById("typing-text");
         let charIndex = 0;
@@ -132,136 +143,250 @@
 
         // --- GESTIÓN DE MODALES ---
         function openModal(id) { document.getElementById(id).style.display = 'flex'; if(id==='mathModal') nextMath(); }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id==='tttModal') resetTTT(); }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // --- JUEGO DE MATEMÁTICAS ---
-        let cAns = 0;
+        // --- TRAGAMONEDAS (SOLUCIÓN EMOJIS) ---
+        const iconsSlot = ['🍎','🍐','🍋','🍉','🍇','🍓','🍒','🍍','🥥','🥝','🍕','🍔','🍟','🌭','🥓','🧀','🥨','🥯','🥞','🧇'];
+        function spin() {
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true;
+            document.getElementById('slot-result').textContent = "Girando...";
+            let count = 0;
+            let timer = setInterval(() => {
+                document.getElementById('s1').textContent = iconsSlot[Math.floor(Math.random()*iconsSlot.length)];
+                document.getElementById('s2').textContent = iconsSlot[Math.floor(Math.random()*iconsSlot.length)];
+                document.getElementById('s3').textContent = iconsSlot[Math.floor(Math.random()*iconsSlot.length)];
+                count++;
+                if(count > 15) {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    checkSlotWin();
+                }
+            }, 80);
+        }
+        function checkSlotWin() {
+            const r1 = document.getElementById('s1').textContent;
+            const r2 = document.getElementById('s2').textContent;
+            const r3 = document.getElementById('s3').textContent;
+            const msg = document.getElementById('slot-result');
+            if(r1 === r2 && r2 === r3) {
+                msg.textContent = "¡JACKPOT! 🎉";
+                msg.style.color = "#FFD700";
+            } else {
+                msg.textContent = "Sigue intentando...";
+                msg.style.color = "white";
+            }
+        }
+
+        // --- MATEMÁTICAS ---
+        let currentAns = 0;
         function nextMath() {
-            const a = Math.floor(Math.random()*50)+1, b = Math.floor(Math.random()*50)+1;
+            const a = Math.floor(Math.random() * 50) + 1;
+            const b = Math.floor(Math.random() * 50) + 1;
             const op = Math.random() > 0.5 ? '+' : '-';
-            cAns = op === '+' ? a+b : a-b;
+            currentAns = op === '+' ? a + b : a - b;
             document.getElementById('math-question').textContent = `${a} ${op} ${b}`;
             document.getElementById('math-answer').value = "";
             document.getElementById('math-msg').textContent = "";
-            document.getElementById('math-answer').focus();
         }
         function checkMath() {
             const val = document.getElementById('math-answer').value;
             if(val === "") return;
-            if(parseInt(val) === cAns) {
+            if(parseInt(val) === currentAns) {
                 document.getElementById('math-msg').textContent = "¡Correcto! ✅";
                 document.getElementById('math-msg').style.color = "#4BB543";
-                setTimeout(nextMath, 800);
+                setTimeout(nextMath, 1000);
             } else {
-                document.getElementById('math-msg').textContent = "Error, intenta de nuevo ❌";
+                document.getElementById('math-msg').textContent = "Incorrecto ❌";
                 document.getElementById('math-msg').style.color = "#FF3333";
             }
         }
 
-        // --- TRAGAMONEDAS (40 ICONOS) ---
-        const icos = ['🍎','🍐','🍋','🍌','🍉','🍇','🍓','🫐','🍈','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌶️','🌽','🥕','🫒','🧄','🧅','🍄','🥜','🌰','🍞','🥐','🥖','🫓','🥨','🥯','🥞',' waffle','🧀','🍗'];
-        function spin() {
-            const bBtn = document.getElementById('spinBtn'); bBtn.disabled = true;
-            document.getElementById('slot-result').textContent = "Girando...";
-            let count = 0;
-            let timer = setInterval(() => {
-                document.getElementById('s1').textContent = icos[Math.floor(Math.random()*icos.length)];
-                document.getElementById('s2').textContent = icos[Math.floor(Math.random()*icos.length)];
-                document.getElementById('s3').textContent = icos[Math.floor(Math.random()*icos.length)];
-                if(++count > 20) {
-                    clearInterval(timer); bBtn.disabled = false;
-                    const res = [document.getElementById('s1').textContent, document.getElementById('s2').textContent, document.getElementById('s3').textContent];
-                    if(res[0]===res[1] && res[1]===res[2]) {
-                        document.getElementById('slot-result').textContent = "¡JACKPOT! 🏆";
-                        document.getElementById('slot-result').style.color = "#FFD700";
-                    } else {
-                        document.getElementById('slot-result').textContent = "Perdiste...";
-                        document.getElementById('slot-result').style.color = "white";
-                    }
-                }
-            }, 70);
-        }
+        // --- 3 EN RAYA (IA MEJORADA Y REINICIO) ---
+        let tBoard = ["","","","","","","","",""];
+        let humanTTT = "X";
+        let aiTTT = "O";
+        let difficultyTTT = "easy";
+        let gameActiveTTT = false;
 
-        // --- 3 EN RAYA (LÓGICA MEJORADA) ---
-        let board = ["","","","","","","","",""], human = "X", ai = "O", difficulty = "easy", active = false;
-        let isAiThinking = false;
-
-        function setF(c) { 
-            human = c; ai = c === "X" ? "O" : "X"; 
-            document.getElementById('fX').className = c === 'X' ? 'mini-btn active' : 'mini-btn'; 
-            document.getElementById('fO').className = c === 'O' ? 'mini-btn active' : 'mini-btn'; 
+        function setFichaTTT(ficha) {
+            humanTTT = ficha;
+            aiTTT = ficha === "X" ? "O" : "X";
+            document.getElementById('btnFichaX').className = ficha === 'X' ? 'mini-btn active' : 'mini-btn';
+            document.getElementById('btnFichaO').className = ficha === 'O' ? 'mini-btn active' : 'mini-btn';
         }
 
         function startTTT() {
-            board = ["","","","","","","","",""]; 
-            difficulty = document.getElementById('ttt-diff').value;
-            document.getElementById('ttt-setup').style.display = 'none'; 
+            difficultyTTT = document.getElementById('ttt-diff').value;
+            document.getElementById('ttt-setup').style.display = 'none';
             document.getElementById('ttt-game').style.display = 'block';
-            active = true; isAiThinking = false;
-            renderTTT();
-            if(ai === "X") { statusTTT("IA pensando..."); isAiThinking = true; setTimeout(aiTurn, 1000); } 
-            else { statusTTT("Tu turno ("+human+")"); }
+            restartTTT();
         }
 
-        function renderTTT() {
-            const cont = document.getElementById('ttt-board'); cont.innerHTML = "";
-            board.forEach((v, i) => {
-                const d = document.createElement('div'); d.className = 'cell'; d.textContent = v;
-                d.onclick = () => { if(!isAiThinking && board[i] === "" && active) { board[i] = human; renderTTT(); if(!checkTTT()) { isAiThinking = true; statusTTT("IA pensando..."); setTimeout(aiTurn, 1000); } } };
-                cont.appendChild(d);
+        function backToTTTSetup() {
+            document.getElementById('ttt-setup').style.display = 'block';
+            document.getElementById('ttt-game').style.display = 'none';
+        }
+
+        function restartTTT() {
+            tBoard = ["","","","","","","","",""];
+            gameActiveTTT = true;
+            document.getElementById('btnRestartTTT').style.display = 'none';
+            drawTTTBoard();
+            
+            if(aiTTT === "X") {
+                document.getElementById('ttt-status').textContent = "IA pensando...";
+                gameActiveTTT = false;
+                setTimeout(aiMoveTTT, 600);
+            } else {
+                document.getElementById('ttt-status').textContent = "Tu turno ("+humanTTT+")";
+            }
+        }
+
+        function drawTTTBoard() {
+            const container = document.getElementById('ttt-board');
+            container.innerHTML = "";
+            tBoard.forEach((val, i) => {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.textContent = val;
+                cell.onclick = () => playerMoveTTT(i);
+                container.appendChild(cell);
             });
         }
 
-        function aiTurn() {
-            if(!active) return;
-            let move;
-            if(difficulty === "easy") move = randMove();
-            else if(difficulty === "normal") move = Math.random() > 0.4 ? minimax(board, ai).index : randMove();
-            else move = minimax(board, ai).index;
-            
-            board[move] = ai; renderTTT(); isAiThinking = false;
-            if(!checkTTT()) statusTTT("Tu turno ("+human+")");
-        }
-
-        function randMove() { let e = board.map((v,i)=>v===""?i:null).filter(v=>v!==null); return e[Math.floor(Math.random()*e.length)]; }
-        function statusTTT(t) { document.getElementById('ttt-status').textContent = t; }
-
-        function minimax(newBoard, player) {
-            let avail = newBoard.map((v,i)=>v===""?i:null).filter(v=>v!==null);
-            if(winTTT(newBoard, human)) return {score:-10};
-            if(winTTT(newBoard, ai)) return {score:10};
-            if(avail.length === 0) return {score:0};
-            let moves = [];
-            for(let i=0; i<avail.length; i++) {
-                let m = {index: avail[i]}; newBoard[avail[i]] = player;
-                m.score = minimax(newBoard, player === ai ? human : ai).score;
-                newBoard[avail[i]] = ""; moves.push(m);
+        function playerMoveTTT(index) {
+            if(tBoard[index] === "" && gameActiveTTT) {
+                tBoard[index] = humanTTT;
+                drawTTTBoard();
+                if(!checkEndTTT()) {
+                    gameActiveTTT = false;
+                    document.getElementById('ttt-status').textContent = "IA pensando...";
+                    setTimeout(aiMoveTTT, 600);
+                }
             }
-            let best;
-            if(player === ai) { let s = -1000; for(let i=0; i<moves.length; i++) if(moves[i].score > s){ s=moves[i].score; best=i; } }
-            else { let s = 1000; for(let i=0; i<moves.length; i++) if(moves[i].score < s){ s=moves[i].score; best=i; } }
-            return moves[best];
         }
 
-        function winTTT(b, p) {
-            const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            return w.some(c => c.every(i => b[i] === p));
+        function aiMoveTTT() {
+            let move;
+            if (difficultyTTT === "easy") {
+                move = randomMove();
+            } else if (difficultyTTT === "normal") {
+                // Modo Normal: 50% de probabilidad de jugar perfecto con Minimax
+                if (Math.random() < 0.5) {
+                    move = minimax(tBoard, aiTTT).index;
+                } else {
+                    move = randomMove();
+                }
+            } else {
+                // Modo Extremo: Siempre juega perfecto con Minimax
+                move = minimax(tBoard, aiTTT).index;
+            }
+
+            if (move !== undefined) tBoard[move] = aiTTT;
+            drawTTTBoard();
+            gameActiveTTT = true;
+            if(!checkEndTTT()) {
+                document.getElementById('ttt-status').textContent = "Tu turno ("+humanTTT+")";
+            }
         }
 
-        function checkTTT() {
-            if(winTTT(board, human)) { endTTT("¡GANASTE! 🎉"); return true; }
-            if(winTTT(board, ai)) { endTTT(difficulty==="hard"?"IA: Resultado lógico.":"IA Ganó"); return true; }
-            if(!board.includes("")) { endTTT("Empate 🤝"); return true; }
+        function randomMove() {
+            let available = tBoard.map((v, i) => v === "" ? i : null).filter(v => v !== null);
+            return available[Math.floor(Math.random() * available.length)];
+        }
+
+        // ALGORITMO MINIMAX PARA IA SUPER INTELIGENTE
+        function minimax(newBoard, player) {
+            let availSpots = newBoard.map((v, i) => v === "" ? i : null).filter(v => v !== null);
+
+            if (winning(newBoard, humanTTT)) return {score: -10};
+            if (winning(newBoard, aiTTT)) return {score: 10};
+            if (availSpots.length === 0) return {score: 0};
+
+            let moves = [];
+            for (let i = 0; i < availSpots.length; i++) {
+                let move = {};
+                move.index = availSpots[i];
+                newBoard[availSpots[i]] = player;
+
+                if (player === aiTTT) {
+                    let result = minimax(newBoard, humanTTT);
+                    move.score = result.score;
+                } else {
+                    let result = minimax(newBoard, aiTTT);
+                    move.score = result.score;
+                }
+
+                newBoard[availSpots[i]] = "";
+                moves.push(move);
+            }
+
+            let bestMove;
+            if (player === aiTTT) {
+                let bestScore = -10000;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score > bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            } else {
+                let bestScore = 10000;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score < bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            }
+            return moves[bestMove];
+        }
+
+        function winning(b, player) {
+            if (
+                (b[0] == player && b[1] == player && b[2] == player) ||
+                (b[3] == player && b[4] == player && b[5] == player) ||
+                (b[6] == player && b[7] == player && b[8] == player) ||
+                (b[0] == player && b[3] == player && b[6] == player) ||
+                (b[1] == player && b[4] == player && b[7] == player) ||
+                (b[2] == player && b[5] == player && b[8] == player) ||
+                (b[0] == player && b[4] == player && b[8] == player) ||
+                (b[2] == player && b[4] == player && b[6] == player)
+            ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function checkEndTTT() {
+            const winConditions = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            for (let condition of winConditions) {
+                let [a, b, c] = condition;
+                if (tBoard[a] && tBoard[a] === tBoard[b] && tBoard[a] === tBoard[c]) {
+                    gameActiveTTT = false;
+                    document.getElementById('ttt-status').textContent = `¡Gana ${tBoard[a]}!`;
+                    highlightWinTTT(condition);
+                    document.getElementById('btnRestartTTT').style.display = 'block';
+                    return true;
+                }
+            }
+            if (!tBoard.includes("")) {
+                gameActiveTTT = false;
+                document.getElementById('ttt-status').textContent = "¡Empate! 🤝";
+                document.getElementById('btnRestartTTT').style.display = 'block';
+                return true;
+            }
             return false;
         }
 
-        function endTTT(m) {
-            statusTTT(m); active = false; isAiThinking = false;
-            const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            w.forEach(c => { if(c.every(i => board[i] && board[i] === board[c[0]])) c.forEach(i => document.getElementById('ttt-board').children[i].classList.add('win')); });
+        function highlightWinTTT(cells) {
+            const containerCells = document.getElementById('ttt-board').children;
+            for(let index of cells) {
+                containerCells[index].classList.add('win');
+            }
         }
-
-        function resetTTT() { document.getElementById('ttt-setup').style.display='block'; document.getElementById('ttt-game').style.display='none'; }
     </script>
 </body>
 </html>
