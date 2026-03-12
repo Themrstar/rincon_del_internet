@@ -19,7 +19,6 @@
             overflow-x: hidden;
         }
 
-        /* --- TÍTULO Y DECORACIÓN --- */
         header { text-align: center; margin: 30px 0; }
 
         .main-title {
@@ -40,7 +39,6 @@
             box-shadow: 0 0 10px #6c5ce7;
         }
 
-        /* --- BANNER --- */
         .hero-banner {
             width: 90%;
             max-width: 700px;
@@ -54,7 +52,6 @@
             border: 1px solid rgba(108, 92, 231, 0.3);
         }
 
-        /* --- CAJA DE TEXTO (Con efecto typing) --- */
         .description-card {
             background-color: #161b22;
             padding: 25px;
@@ -69,24 +66,24 @@
         #typing-text {
             font-size: 1.1rem;
             font-weight: 600;
-            min-height: 3em; /* Evita que la página salte al escribir */
+            min-height: 3em;
         }
 
-        /* --- WIDGET DE DISCORD --- */
-        .discord-widget-container {
-            width: 90%;
-            display: flex;
-            justify-content: center;
+        /* --- AJUSTE DEL WIDGET (Solo números) --- */
+        .discord-widget-wrapper {
+            width: 350px;
+            height: 110px; /* Altura reducida para mostrar solo la cabecera */
+            overflow: hidden; /* Oculta lo que sobra (miembros y canales) */
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
             margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         iframe {
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            max-width: 100%;
+            margin-top: 0; /* Alineado al inicio */
         }
 
-        /* --- BOTÓN DE ACCIÓN --- */
         .discord-button {
             display: inline-flex;
             align-items: center;
@@ -105,13 +102,13 @@
 
         .discord-button:active {
             transform: scale(0.95);
-            box-shadow: 0 0 25px rgba(88, 101, 242, 0.8);
         }
 
         footer {
             padding: 20px;
             font-size: 0.8rem;
             color: #444;
+            margin-top: auto;
         }
     </style>
 </head>
@@ -128,7 +125,7 @@
         <p id="typing-text"></p>
     </article>
 
-    <div class="discord-widget-container">
+    <div class="discord-widget-wrapper">
         <iframe src="https://discord.com/widget?id=1127514447007719565&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
     </div>
 
@@ -137,14 +134,13 @@
     </a>
 
     <footer>
-        &copy; 2026 UN RINCÓN DEL INTERNET.
+        &copy; 2026 Un Rincón Del Internet
     </footer>
 
     <script>
-        // EFECTO DE TEXTO QUE SE ESCRIBE SOLO
         const text = "Un humilde rincón de internet dedicado a la socialización y al disfrute, con una moderación adecuada.";
         let index = 0;
-        const speed = 40; // Velocidad en milisegundos
+        const speed = 40;
 
         function typeWriter() {
             if (index < text.length) {
@@ -153,10 +149,8 @@
                 setTimeout(typeWriter, speed);
             }
         }
-
-        // Iniciar el efecto al cargar la página
         window.onload = typeWriter;
-    </script>
+    </scrit>
 
 </body>
 </html>
