@@ -4,222 +4,159 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UN RINCÓN DEL INTERNET</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* --- RESETEO Y ESTILOS BASE (Detalle Profesional) --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Open Sans', sans-serif;
-            background-color: #0d1117; /* Fondo oscuro tipo GitHub */
+            background-color: #0d1117;
             color: #c9d1d9;
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* --- CONTENEDOR PRINCIPAL --- */
-        .main-wrapper {
-            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* --- HEADER Y TÍTULO (Detalle Decorativo) --- */
-        header {
-            width: 100%;
-            text-align: center;
-            margin-top: 20px;
-            margin-bottom: 30px;
-        }
+        /* --- TÍTULO Y DECORACIÓN --- */
+        header { text-align: center; margin: 30px 0; }
 
         .main-title {
             font-family: 'Montserrat', sans-serif;
-            font-size: 2.2rem;
+            font-size: 2rem;
             color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(108, 92, 231, 0.5); /* Resplandor sutil */
+            text-shadow: 0 0 15px rgba(108, 92, 231, 0.6);
         }
 
         .subtitle-line {
-            width: 100px;
+            width: 60px;
             height: 4px;
-            background-color: #6c5ce7; /* Color de acento de tu badge */
-            margin: 0 auto;
-            border-radius: 2px;
+            background: #6c5ce7;
+            margin: 10px auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #6c5ce7;
         }
 
-        /* --- SECCIÓN HERO (Banner y Descripción) --- */
-        .hero-section {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        /* Banner Optimizado para Móvil (Mantiene proporción y carga de internet) */
+        /* --- BANNER --- */
         .hero-banner {
-            width: 100%;
-            max-width: 600px; /* Ancho máximo en tablets/PC */
-            height: auto;
-            aspect-ratio: 16 / 9; /* Fuerza la proporción del banner */
+            width: 90%;
+            max-width: 700px;
+            aspect-ratio: 16 / 9;
             background-image: url('https://cdn.discordapp.com/attachments/1128263242909765652/1481442141267034343/Nuevo_proyecto_39_Copy_2_Copy_Copy_B6B7516.png?ex=69b35402&is=69b20282&hm=36df8045bd700ddf03e9109746f12a28b39dd0a79f55dfb96f6c627589b46b7c&');
             background-size: cover;
             background-position: center;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); /* Sombra profesional */
-            border: 2px solid rgba(108, 92, 231, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            margin-bottom: 25px;
+            border: 1px solid rgba(108, 92, 231, 0.3);
         }
 
-        /* Caja de Descripción (Detalle Decorativo) */
+        /* --- CAJA DE TEXTO (Con efecto typing) --- */
         .description-card {
             background-color: #161b22;
-            padding: 30px;
+            padding: 25px;
             border-radius: 12px;
-            width: 100%;
+            width: 90%;
             max-width: 500px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
             text-align: center;
-            position: relative;
+            border-bottom: 3px solid #6c5ce7;
+            margin-bottom: 30px;
         }
 
-        .description-card::before { /* Acento decorativo sutil */
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #6c5ce7, transparent);
-        }
-
-        .description-card p {
+        #typing-text {
             font-size: 1.1rem;
-            color: #e0e0e0;
+            font-weight: 600;
+            min-height: 3em; /* Evita que la página salte al escribir */
         }
 
-        /* --- SECCIÓN DE ACCIÓN (Botón) --- */
-        .action-section {
-            width: 100%;
+        /* --- WIDGET DE DISCORD --- */
+        .discord-widget-container {
+            width: 90%;
             display: flex;
             justify-content: center;
-            margin-top: auto; /* Empuja el botón hacia abajo si hay espacio */
-            padding-bottom: 40px;
+            margin-bottom: 30px;
         }
 
-        /* Botón de Discord Estilizado */
+        iframe {
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            max-width: 100%;
+        }
+
+        /* --- BOTÓN DE ACCIÓN --- */
         .discord-button {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 12px;
-            background-color: #5865F2; /* Color oficial Discord */
-            color: #ffffff;
+            gap: 10px;
+            background-color: #5865F2;
+            color: white;
             text-decoration: none;
-            padding: 18px 35px;
-            border-radius: 30px;
+            padding: 16px 30px;
+            border-radius: 50px;
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 6px 15px rgba(88, 101, 242, 0.4);
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(88, 101, 242, 0.4);
+            margin-bottom: 50px;
         }
 
-        /* Efecto profesional al pulsar/hover */
-        .discord-button:hover,
         .discord-button:active {
-            background-color: #4752c4;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(88, 101, 242, 0.6);
+            transform: scale(0.95);
+            box-shadow: 0 0 25px rgba(88, 101, 242, 0.8);
         }
 
-        /* Icono de Discord (SVG integrado para profesionalismo) */
-        .discord-icon {
-            width: 26px;
-            height: 26px;
-            fill: #ffffff;
-        }
-
-        /* --- FOOTER (Limpio y Profesional) --- */
         footer {
-            width: 100%;
-            text-align: center;
-            padding: 20px 0;
+            padding: 20px;
             font-size: 0.8rem;
-            color: #555;
-            background-color: #0d1117;
-            border-top: 1px solid #21262d;
-        }
-
-        /* --- MEDIA QUERIES PARA MÓVILES --- */
-        @media (max-width: 600px) {
-            .main-title {
-                font-size: 1.8rem;
-            }
-
-            .description-card {
-                padding: 20px;
-            }
-
-            .description-card p {
-                font-size: 1rem;
-            }
-
-            .discord-button {
-                font-size: 1rem;
-                padding: 15px 25px;
-                width: 90%; /* Casi ancho completo en móvil */
-                justify-content: center;
-            }
+            color: #444;
         }
     </style>
 </head>
 <body>
 
-    <div class="main-wrapper">
-        <header>
-            <h1 class="main-title">UN RINCÓN DEL INTERNET</h1>
-            <div class="subtitle-line"></div>
-        </header>
+    <header>
+        <h1 class="main-title">UN RINCÓN DEL INTERNET</h1>
+        <div class="subtitle-line"></div>
+    </header>
 
-        <main class="hero-section">
-            <div class="hero-banner" role="img" aria-label="Banner de bienvenida"></div>
+    <div class="hero-banner"></div>
 
-            <article class="description-card">
-                <p>Un humilde rincón de internet dedicado a la socialización y al disfrute, con una moderación adecuada.</p>
-            </article>
-        </main>
+    <article class="description-card">
+        <p id="typing-text"></p>
+    </article>
 
-        <section class="action-section">
-            <a href="https://discord.gg/zRSJX6teBj" class="discord-button" target="_blank">
-                <svg class="discord-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36"><path d="M107.7 8.07a105.15 105.15 0 0 0-26.11-8.1C81.43 0 81.3 0 81.18 0a1.32 1.32 0 0 0-1.28.92 73.1 73.1 0 0 0-3.24 6.7 97.4 97.4 0 0 0-28.84 0 69 69 0 0 0-3.24-6.7 1.32 1.32 0 0 0-1.28-.92c-8.89 0-17.65 2.76-26.11 8.1-.12.06-.18.12-.24.18C3.78 22.18-1 46.12.18 69.5a108.63 108.63 0 0 0 32.85 16.59c.12 0 .18 0 .24.06.12 0 .18 0 .18-.06a78.36 78.36 0 0 0 7.82-12.7.74.74 0 0 0-.4-.92 68.61 68.61 0 0 1-10.4-5c-.12-.06-.12-.12-.12-.18-.06-.12 0-.18.12-.18.42-.3.84-.6 1.28-.9a.7.7 0 0 1 .66-.12 87.23 87.23 0 0 0 62 0 .7.7 0 0 1 .66.12c.42.3.84.6 1.28.9.12 0 .18.06.12.18-.06.12-.12.12-.12.18a70.08 70.08 0 0 1-10.4 5 .74.74 0 0 0-.4.92 78.36 78.36 0 0 0 7.82 12.7.18.18 0 0 0 .18.06c.06 0 .12 0 .18-.06a108.63 108.63 0 0 0 32.85-16.59.18.18 0 0 0 .18-.18c1.32-26.65-3.3-50.53-17.16-69.5a.18.18 0 0 0-.24-.18ZM42.12 65.55c-6.18 0-11.28-5.64-11.28-12.54s5.04-12.54 11.28-12.54c6.24 0 11.34 5.64 11.34 12.54s-5.04 12.54-11.34 12.54Zm42.9 0c-6.18 0-11.28-5.64-11.28-12.54s5.04-12.54 11.28-12.54c6.24 0 11.34 5.64 11.34 12.54s-5.04 12.54-11.34 12.54Z"/></svg>
-                Entrar al Servidor
-            </a>
-        </section>
+    <div class="discord-widget-container">
+        <iframe src="https://discord.com/widget?id=1127514447007719565&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
     </div>
 
+    <a href="https://discord.gg/zRSJX6teBj" class="discord-button" target="_blank">
+        ¡UNIRSE AHORA!
+    </a>
+
     <footer>
-        &copy; 2026 UN RINCÓN DEL INTERNET. Todos los derechos reservados.
+        &copy; 2026 UN RINCÓN DEL INTERNET.
     </footer>
+
+    <script>
+        // EFECTO DE TEXTO QUE SE ESCRIBE SOLO
+        const text = "Un humilde rincón de internet dedicado a la socialización y al disfrute, con una moderación adecuada.";
+        let index = 0;
+        const speed = 40; // Velocidad en milisegundos
+
+        function typeWriter() {
+            if (index < text.length) {
+                document.getElementById("typing-text").innerHTML += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, speed);
+            }
+        }
+
+        // Iniciar el efecto al cargar la página
+        window.onload = typeWriter;
+    </script>
 
 </body>
 </html>
